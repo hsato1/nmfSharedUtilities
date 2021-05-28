@@ -460,7 +460,7 @@ nmfProgressWidget::setMaxNumGenerations(const int& MaxNumGenerations)
 void
 nmfProgressWidget::updateTime()
 {
-    timeLE->setText(QString::fromStdString(nmfUtils::elapsedTimeCondensed(m_startTime)));
+//    timeLE->setText(QString::fromStdString(nmfUtils::elapsedTimeCondensed(m_startTime)));
 }
 
 void
@@ -505,7 +505,9 @@ nmfProgressWidget::setupConnections() {
     rangeSetPB->disconnect();
     validPointsCB->disconnect();
 
-    connect(stopPB,     SIGNAL(clicked(bool)),        this, SLOT(callback_stopPB(bool)));
+//    connect(stopPB,     SIGNAL(clicked(bool)),        this, SLOT(callback_stopPB(bool)));
+//connect(stopPB, &QPushButton::clicked, this, &nmfProgressWidget::callback_stopPB);
+      connect(stopPB,     SIGNAL(clicked()), SLOT(close()));
     connect(clearPB,    SIGNAL(clicked()),            this, SLOT(callback_clearPB()));
     connect(labelsCB,   SIGNAL(stateChanged(int)),    this, SLOT(callback_labelsCB(int)));
     connect(markersCB,  SIGNAL(stateChanged(int)),    this, SLOT(callback_markersCB(int)));
@@ -756,7 +758,7 @@ nmfProgressWidget::getElapsedTime()
 void
 nmfProgressWidget::StopRun()
 {
-    m_elapsedTime = nmfUtils::elapsedTime(m_startTime);
+//    m_elapsedTime = nmfUtils::elapsedTime(m_startTime);
     emit StopTheTimer();
 
     if (m_RunType == "MSSPM") {
@@ -785,7 +787,7 @@ nmfProgressWidget::StopRun()
 void
 nmfProgressWidget::startRun()
 {
-    m_startTime  = nmfUtils::startTimer();
+//    m_startTime  = nmfUtils::startTimer();
     m_wasStopped = false;
 
     if (m_RunType == "MSSPM") {

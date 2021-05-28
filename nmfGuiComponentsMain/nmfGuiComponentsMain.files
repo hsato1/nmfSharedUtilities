@@ -1,0 +1,14 @@
+nmfGuiComponentsMain.cpp
+nmfGuiComponentsMain.h
+nmfOutputChart3D.cpp
+nmfOutputChart3D.h
+nmfOutputChart3DBarModifier.cpp
+nmfOutputChart3DBarModifier.h
+nmfOutputChartBar.cpp
+nmfOutputChartBar.h
+nmfOutputChartBase.cpp
+nmfOutputChartBase.h
+nmfOutputChartLine.cpp
+nmfOutputChartLine.h
+nmfOutputChartStackedBar.cpp
+nmfOutputChartStackedBar.h

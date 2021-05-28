@@ -86,7 +86,7 @@ public:
     QLineEdit   *subRunLE;
 
     QTimer*     m_timer;
-    std::chrono::_V2::system_clock::time_point m_startTime;
+//    std::chrono::_V2::system_clock::time_point m_startTime;
     int         m_maxNumGenerations;
     QString     m_mainTitle;
     QString     m_xTitle;

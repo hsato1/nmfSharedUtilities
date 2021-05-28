@@ -22,6 +22,7 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QTimer>
+#include <QThread>              /*added QThread to reduce dependancy on boost*/
 #include <QVBoxLayout>
 
 #include "nmfLogger.h"

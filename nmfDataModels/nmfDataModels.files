@@ -1,0 +1,17 @@
+nmfBiomassModel.h
+nmfData.cpp
+nmfData.h
+nmfEntityModel.cpp
+nmfEntityModel.h
+nmfInitialSelectivityModel.cpp
+nmfInitialSelectivityModel.h
+nmfMaturityModel.cpp
+nmfMaturityModel.h
+nmfModelDelegates.cpp
+nmfModelDelegates.h
+nmfMortalityModel.cpp
+nmfMortalityModel.h
+nmfVarFishMortModel.cpp
+nmfVarFishMortModel.h
+nmfVonBertModel.cpp
+nmfVonBertModel.h
