@@ -460,7 +460,9 @@ nmfProgressWidget::setMaxNumGenerations(const int& MaxNumGenerations)
 void
 nmfProgressWidget::updateTime()
 {
-//    timeLE->setText(QString::fromStdString(nmfUtils::elapsedTimeCondensed(m_startTime)));
+
+    timeLE->setText(QString::fromStdString(nmfUtilsQt::elapsedTimeCondensed(m_startTime)));
+
 }
 
 void
@@ -524,6 +526,8 @@ nmfProgressWidget::setupConnections() {
 void
 nmfProgressWidget::stopTimer()
 {
+    logger->logMsg(nmfConstants::Normal,"Stop " + m_RunType + " Progress Chart Timer");
+
     m_timer->stop();
 }
 
@@ -551,19 +555,21 @@ nmfProgressWidget::callback_stopPB(bool unused)
 {
     logger->logMsg(nmfConstants::Normal,"Stop " + m_RunType + " Progress Chart Timer");
 
-    emit StopTheRun();
-    StopRun();
-    m_wasStopped = true;
+    if (! wasStopped()) {
+        emit StopTheRun();
+        StopRun();
+        m_wasStopped = true;
 
-    if (m_RunType == "MSSPM") {
-        updateChartDataLabel(nmfConstantsMSSPM::MSSPMProgressChartLabelFile,
-                             "<b>Status:&nbsp;&nbsp;</b>User halted MSSPM run. Output data incomplete.");
-    } else if (m_RunType == "MSVPA") {
-        updateChartDataLabel(nmfConstantsMSVPA::MSVPAProgressChartLabelFile,
-                             "<b>Status:&nbsp;&nbsp;</b>User halted MSVPA run. Output data incomplete.");
-    } else if (m_RunType == "Forecast") {
-        updateChartDataLabel(nmfConstantsMSVPA::ForecastProgressChartLabelFile,
-                             "<b>Status:&nbsp;&nbsp;</b>User halted Forecast run. Output data incomplete.");
+        if (m_RunType == "MSSPM") {
+            updateChartDataLabel(nmfConstantsMSSPM::MSSPMProgressChartLabelFile,
+                                 "<b>Status:&nbsp;&nbsp;</b>User halted MSSPM run. Output data incomplete.");
+        } else if (m_RunType == "MSVPA") {
+            updateChartDataLabel(nmfConstantsMSVPA::MSVPAProgressChartLabelFile,
+                                 "<b>Status:&nbsp;&nbsp;</b>User halted MSVPA run. Output data incomplete.");
+        } else if (m_RunType == "Forecast") {
+            updateChartDataLabel(nmfConstantsMSVPA::ForecastProgressChartLabelFile,
+                                 "<b>Status:&nbsp;&nbsp;</b>User halted Forecast run. Output data incomplete.");
+        }
     }
 
 } // end callback_stopPB
@@ -758,7 +764,9 @@ nmfProgressWidget::getElapsedTime()
 void
 nmfProgressWidget::StopRun()
 {
-//    m_elapsedTime = nmfUtils::elapsedTime(m_startTime);
+
+    m_elapsedTime = nmfUtilsQt::elapsedTime(m_startTime);
+
     emit StopTheTimer();
 
     if (m_RunType == "MSSPM") {
@@ -787,7 +795,9 @@ nmfProgressWidget::StopRun()
 void
 nmfProgressWidget::startRun()
 {
-//    m_startTime  = nmfUtils::startTimer();
+
+    m_startTime  = nmfUtilsQt::getCurrentTime();
+
     m_wasStopped = false;
 
     if (m_RunType == "MSSPM") {

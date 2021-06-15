@@ -73,6 +73,8 @@ namespace nmfConstants
     const bool   DontShowLegend          = false;
     const bool   TimestampWithUnderscore = true;
     const bool   TimestampWithoutUnderscore = false;
+    const bool   ManuallySetYMinMax      = true;
+    const bool   DontManuallySetYMinMax  = false;
 
     const double KgToLbs       = 2.20462;
     const double MortalityMax  = 5.0;

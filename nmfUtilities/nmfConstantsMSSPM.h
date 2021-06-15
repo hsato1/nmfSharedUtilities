@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <vector>
+#include <QStringList>
 
 namespace nmfConstantsMSSPM
 {
@@ -116,6 +117,7 @@ namespace nmfConstantsMSSPM
      const bool   IsNotEnsemble        = false;
      const bool   IsMonteCarlo         = true;
      const bool   IsNotMonteCarlo      = false;
+     const bool   PreEstimation        = true;
 
      const std::string  HiddenDir                      = ".MSSPM";
      const std::string  HiddenDataDir                  = ".MSSPM/data";
@@ -137,6 +139,14 @@ namespace nmfConstantsMSSPM
      const std::string  MultiRunFilename               = "MultiRunParameter.csv";
      const std::string  ModelReviewFilename            = "ModelReview.csv";
      const std::string  EstimatedParametersFilename    = "EstimatedParameters.csv";
+
+     const QStringList VectorParameterNames =
+         {"Initial Biomass (B₀)",
+          "Growth Rate (r)",
+          "Carrying Capacity (K)",
+          "Catchability (q)",
+          "SurveyQ"
+         };
 
      const std::vector<std::string> EstimateCheckboxNames =
          {"InitBiomass",

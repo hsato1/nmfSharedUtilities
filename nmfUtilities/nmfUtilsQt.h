@@ -22,6 +22,7 @@
 #include <QtCharts/QChart>
 #include <QClipboard>
 #include <QDate>
+#include <QDateTime>
 #include <QDebug>
 #include <QDir>
 #include <QEventLoop>
@@ -314,11 +315,11 @@ namespace nmfUtilsQt {
      */
     QSettings* createSettings(const std::string& windowsDir,
                               const QString&     name);
-    /**
-     * @brief delays program execution by the passed number of milliseconds
-     * @param milliseconds : number of milliseconds by which to delay program execution
-     */
-    void delayMSec(const int& milliseconds);
+//    /**
+//     * @brief delays program execution by the passed number of milliseconds
+//     * @param milliseconds : number of milliseconds by which to delay program execution
+//     */
+//    void delayMSec(const int& milliseconds);
     /**
      * @brief deselects all cells in the passed tableView
      * @param tableView : tableView to deselect cells
@@ -717,6 +718,23 @@ namespace nmfUtilsQt {
      */
     bool extractTag(const QString filename,
                     QString& tag);
+    /**
+     * @brief Returns the current time
+     * @return the current time
+     */
+    QDateTime getCurrentTime();
+    /**
+     * @brief Calculates the time elapsed between the passed startTime and the currentTime
+     * @param startTime : The start time with which to calculate the elapsed time
+     * @return The number of hours, minutes, or seconds that have elapsed (in a string format)
+     */
+    std::string elapsedTime(QDateTime startTime);
+    /**
+     * @brief Calculates the time elapsed between the passed startTime and the currentTime and displays it in a condensed format
+     * @param startTime : The start time with which to calculate the elapsed time
+     * @return A string represent the time passed in format: hh:mm:ss
+     */
+    std::string elapsedTimeCondensed(QDateTime startTime);
 
 } // end namespace
 

@@ -10,7 +10,6 @@
 
 #pragma once
 
-#include <chrono>
 #include <ctime>
 #include <cmath>
 #include <iomanip>
@@ -24,6 +23,7 @@
 
 #include <QDir>
 
+#include "nmfUtilsQt.h"
 #include "nmfStructsQt.h"
 #include "nmfConstantsMSVPA.h"
 #include "nmfLogger.h"
@@ -298,18 +298,6 @@ namespace nmfUtils {
      * @param fileB : file to be copied to
      */
     void copyFile(std::string fileA, std::string fileB);
-    /**
-     * @brief Calculates the time elapsed between the passed startTime and the currentTime
-     * @param startTime : The start time with which to calculate the elapsed time
-     * @return The number of hours, minutes, or seconds that have elapsed (in a string format)
-     */
-    std::string elapsedTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime);
-    /**
-     * @brief Calculates the time elapsed between the passed startTime and the currentTime and displays it in a condensed format
-     * @param startTime : The start time with which to calculate the elapsed time
-     * @return A string represent the time passed in format: hh:mm:ss
-     */
-    std::string elapsedTimeCondensed(std::chrono::time_point<std::chrono::high_resolution_clock> startTime);
     /**
      * @brief Returns the files in the passed directory having the given extension
      * @param path : directory in which to search for files
@@ -594,9 +582,12 @@ namespace nmfUtils {
                std::string& str1,
                std::string& str2);
     /**
-     * @brief effectively starts a timer by returning the current time
-     * @return the current time
+     * @brief appends the new vector to the current vector
+     * @param newVec : vector to be appended
+     * @param mainVec : the resultant appended vector
      */
-    std::chrono::time_point<std::chrono::high_resolution_clock> startTimer();
+    void append(std::vector<double>& newVec,
+                std::vector<double>& currentVec);
+
 }
 

@@ -9,6 +9,8 @@
 #include "nmfCompetitionForm.h"
 #include "nmfPredationForm.h"
 
+#include "nmfUtilsQt.h"
+
 typedef boost::numeric::ublas::matrix<double> Matrix;
 
 struct beesCompareLT

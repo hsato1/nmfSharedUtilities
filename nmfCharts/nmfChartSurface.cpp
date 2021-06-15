@@ -15,13 +15,18 @@ nmfChartSurface::nmfChartSurface(Q3DSurface* graph3D,
                                  const boost::numeric::ublas::matrix<double> &rowValues,
                                  const boost::numeric::ublas::matrix<double> &columnValues,
                                  const boost::numeric::ublas::matrix<double> &heightValues,
-                                 const bool& showShadow)
+                                 const bool& showShadow,
+                                 const bool& manuallySetScale,
+                                 const double& manualYMin,
+                                 const double& manualYMax)
 {
     double x,y,z;
     double maxY=0;
     int nrows = heightValues.size1();
     int ncols = heightValues.size2();
     double minY = 10000000.0;
+    double yMin = manualYMin;
+    double yMax = manualYMax;
     QSurfaceDataArray *dataArray = new QSurfaceDataArray;
     m_minCoord = std::make_pair(0,0);
     m_heightValues = heightValues;
@@ -74,13 +79,18 @@ nmfChartSurface::nmfChartSurface(Q3DSurface* graph3D,
     graph3D->addSeries(m_surfaceSeries);
 
     // Some logic here to get "nicer" numbers along the vertical scale.
-    int power = int(std::log10(maxY));             // Ex. let maxY = 304 -> power = 2
-    power = std::pow(10,power);                    // Ex. power = 100
-    double upperLim = power*(int(maxY/power + 1)); // Ex. 100*int(304/100+1) => upperLim = 400
-    if (upperLim > 0) {
-        graph3D->axisY()->setRange(0,upperLim);
+    if (manuallySetScale) {
+        yMax = (yMax <= yMin) ? (yMin+1.0) : yMax;
+        graph3D->axisY()->setRange(yMin,yMax);
     } else {
-        graph3D->axisY()->setRange(0,1);
+        int power = int(std::log10(maxY));             // Ex. let maxY = 304 -> power = 2
+        power = std::pow(10,power);                    // Ex. power = 100
+        double upperLim = power*(int(maxY/power + 1)); // Ex. 100*int(304/100+1) => upperLim = 400
+        if (upperLim > 0) {
+            graph3D->axisY()->setRange(0,upperLim);
+        } else {
+            graph3D->axisY()->setRange(0,1);
+        }
     }
 
     // Reverse the points along the axis if desired

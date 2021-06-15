@@ -16,60 +16,6 @@
 
 namespace nmfUtils {
 
-std::chrono::time_point<std::chrono::high_resolution_clock>
-startTimer()
-{
-    return std::chrono::high_resolution_clock::now();
-}
-
-std::string
-elapsedTimeCondensed(std::chrono::time_point<std::chrono::high_resolution_clock> startTime)
-{
-    std::string elapsedTimeStr = "";
-    char buffer[50];
-
-    auto endTime = std::chrono::high_resolution_clock::now();
-    int elapsedTimeSec = int(std::chrono::duration_cast<std::chrono::milliseconds>(endTime-startTime).count()/1000.0+0.5);
-
-    std::string day  = std::to_string(elapsedTimeSec / (24*3600));
-    std::string hour = std::to_string((elapsedTimeSec % (24*3600)) / 3600);
-    std::string min  = std::to_string((elapsedTimeSec % 3600) / 60);
-    std::string sec  = std::to_string(elapsedTimeSec % 60);
-
-    // add leading zero if needed
-    std::string dd = std::string(2 - day.length(), '0') + day;
-    std::string hh = std::string(2 - hour.length(),'0') + hour;
-    std::string mm = std::string(2 - min.length(), '0') + min;
-    std::string ss = std::string(2 - sec.length(), '0') + sec;
-
-    if (day == "0") {
-        return hh + ':' + mm + ":" + ss;
-    } else {
-        return dd + ":" + hh + ':' + mm + ":" + ss;
-    }
-}
-
-std::string
-elapsedTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime)
-{
-    std::string elapsedTimeStr = "";
-    char buffer[50];
-
-    auto endTime = std::chrono::high_resolution_clock::now();
-    auto elapsedTimeMSec = std::chrono::duration_cast<std::chrono::milliseconds>(endTime-startTime).count();
-
-    if (elapsedTimeMSec >= 60000) {
-        sprintf(buffer,"%6.1f",elapsedTimeMSec/60000.0);
-        elapsedTimeStr = std::string(buffer) + " minute(s)";
-    } else if (elapsedTimeMSec >= 1000) {
-        sprintf(buffer,"%6.1f",elapsedTimeMSec/1000.0);
-        elapsedTimeStr = std::string(buffer) + " second(s)";
-    } else {
-        elapsedTimeStr = std::to_string(elapsedTimeMSec) + " millisecond(s)";
-    }
-    return elapsedTimeStr;
-}
-
 void printError(const std::string msg, const std::string errorMsg)
 {
     std::cout << "\nError: " << errorMsg << std::endl;
@@ -314,7 +260,7 @@ double getMatrixMax(boost::numeric::ublas::matrix<double> &mat,
  * If seed < 0, no seed is used and the algorithm is stochastic.
  * If seed >= 0, then that seed is used and the algorithm is deterministic.
  */
-double    getRandomNumber(int seedValue, double lowerLimit, double upperLimit)
+double getRandomNumber(int seedValue, double lowerLimit, double upperLimit)
 {
 //    std::random_device rd;
 //    int RandomSeed = (seed < 0) ? rd() : seed;
@@ -322,11 +268,10 @@ double    getRandomNumber(int seedValue, double lowerLimit, double upperLimit)
 //    std::uniform_real_distribution<> dist(lowerLimit,upperLimit);
 //    return dist(e2);
 
-    unsigned RandomSeed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned RandomSeed = nmfUtilsQt::getCurrentTime().currentMSecsSinceEpoch();
     unsigned Seed = (seedValue < 0) ? RandomSeed : seedValue;
     std::uniform_real_distribution<double> dist(lowerLimit,upperLimit);
     std::mt19937_64 rng(Seed);
-
     return dist(rng);
 }
 
@@ -643,5 +588,11 @@ getOS()
     #endif
 }
 
+void
+append(std::vector<double>& newVec,
+       std::vector<double>& currentVec)
+{
+    currentVec.insert(currentVec.end(), newVec.begin(), newVec.end());
+}
 
 }

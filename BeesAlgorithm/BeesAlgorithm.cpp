@@ -128,7 +128,7 @@ BeesAlgorithm::printParameterRanges(const int& NumSpecies,
     bool isExponent    = (PredationForm   == "Type III");
     int NumSpeciesOrGuilds = (isBetaGuilds) ? NumGuilds : NumSpecies;
 
-    std::cout << "  Initial Biomass (B₀): ";
+    std::cout << "  Initial Absolute Biomass (B₀): ";
     for (int i=0; i<NumSpeciesOrGuilds; ++i) {
         std::cout << "[" << m_ParameterRanges[m].first << "," << m_ParameterRanges[m].second << "] ";
         ++m;
@@ -710,8 +710,8 @@ BeesAlgorithm::createRandomBee(bool doWhileLoop, std::string& errorMsg)
     double minVal;
     double maxVal;
     double fitness;
-    auto startTime = std::chrono::steady_clock::now();
-    auto endTime   = std::chrono::steady_clock::now();
+    QDateTime startTime = nmfUtilsQt::getCurrentTime();
+    QDateTime endTime;
     std::vector<double> NullParameters = {};
     std::vector<double> parameters(m_BeeStruct.TotalNumberParameters,0.0);
 
@@ -727,9 +727,8 @@ BeesAlgorithm::createRandomBee(bool doWhileLoop, std::string& errorMsg)
         }
         fitness = evaluateObjectiveFunction(parameters);
 //std::cout << "--> fitness: " << fitness << std::endl;
-        endTime = std::chrono::steady_clock::now();
-
-        timeDiff = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+        endTime   = nmfUtilsQt::getCurrentTime();
+        timeDiff = int(startTime.msecsTo(endTime))*1000.0; // microseconds
 //std::cout << "--> timeDiff: " << timeDiff/1000000.0 << "\n" << std::endl;
         timesUp = (timeDiff/1000000.0 > kTimeToSpendSearching);
 

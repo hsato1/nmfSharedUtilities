@@ -1226,6 +1226,7 @@ nmfDatabase::importDatabase(QWidget*     widget,
         }
     }
 
+    // Hiro -update logic for Mac OS
     if (nmfUtils::isOSWindows())
     {
         // This seems to work for Windows.

@@ -150,7 +150,7 @@ nmfChartLine::populateChart(
     currentAxisY->applyNiceNumbers();
     double currentYMin = currentAxisY->min();
     if (YMinSliderVal >= 0) {
-        currentAxisY->setMin(currentYMin*YMinSliderVal/100.0);
+        currentAxisY->setMin(currentYMin*YMinSliderVal/100.0); // RSK - modify this
         currentAxisY->applyNiceNumbers();
     }
 
@@ -186,7 +186,7 @@ nmfChartLine::populateChart(
     }
 
     // Set range so plot completely fills out chart in the x-direction
-    currentAxisX->setRange(XStartVal,XStartVal+NumXValues-1);
+    currentAxisX->setRange(XStartVal,XStartVal+(NumXValues-1)*XInc);
 
     // Set grid line visibility
     chart->axes(Qt::Horizontal).back()->setGridLineVisible(GridLines[0]);

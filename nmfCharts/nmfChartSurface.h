@@ -43,6 +43,9 @@ public:
      * @param columnValues : matrix containing the z values of the plot
      * @param heightValues : matrix containing the height values of plot (i.e. the y values)
      * @param showShadow : boolean signifying if the user wants to see the surface plot's shadow
+     * @param manualSetScale : boolean signifying if the user wants to manually set the vertical scale
+     * @param manualYMin : minimum y axis value on surface
+     * @param manualYMax : maximum y axis value on surface
      */
     nmfChartSurface(
             Q3DSurface* graph3D,
@@ -56,7 +59,10 @@ public:
             const boost::numeric::ublas::matrix<double> &rowValues,
             const boost::numeric::ublas::matrix<double> &columnValues,
             const boost::numeric::ublas::matrix<double> &heightValues,
-            const bool& showShadow);
+            const bool& showShadow,
+            const bool& manuallySetScale,
+            const double& manualYMin,
+            const double& manualYMax);
 
     virtual ~nmfChartSurface() {}
 
