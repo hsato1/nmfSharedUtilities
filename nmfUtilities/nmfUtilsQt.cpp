@@ -2159,6 +2159,20 @@ elapsedTimeCondensed(QDateTime startTime)
     }
 }
 
+
+void
+updateProgressDlg(nmfLogger* logger,
+                  QProgressDialog* dlg,
+                  const std::string& msg,
+                  int& pInc)
+{
+    logger->logMsg(nmfConstants::Normal,msg);
+    dlg->setValue(++pInc);
+    dlg->update();
+    dlg->setLabelText(QString::fromStdString(msg));
+    QCoreApplication::processEvents();
+}
+
 } // end namespace
 
 

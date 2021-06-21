@@ -513,6 +513,11 @@ public:
                         std::string& Password,
                         std::string& ProjectDatabase);
 
+    void loadEstimatedVectorParameters(
+            nmfLogger*   logger,
+            std::string& projectSettingsConfig,
+            QComboBox*   cmbox);
+
     /**
      * @brief getListOfAuthenticatedDatabaseNames - returns list of databases that are appropriate for this application
      * @param authenticatedDatabases - the list of authenticated databases

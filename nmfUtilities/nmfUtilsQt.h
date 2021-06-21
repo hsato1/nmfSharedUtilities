@@ -39,6 +39,7 @@
 #include <QMimeData>
 #include <QModelIndexList>
 #include <QProcess>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSettings>
@@ -736,5 +737,16 @@ namespace nmfUtilsQt {
      */
     std::string elapsedTimeCondensed(QDateTime startTime);
 
+    /**
+     * @brief Updates the passed QProgressDialog widget
+     * @param logger : application logger
+     * @param dlg : QProgressDialog widget
+     * @param msg : message to display on QProgressDialog widget
+     * @param pInc : QProgressDialog increment
+     */
+    void updateProgressDlg(nmfLogger* logger,
+                           QProgressDialog* dlg,
+                           const std::string& msg,
+                           int& pInc);
 } // end namespace
 

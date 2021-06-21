@@ -14,6 +14,7 @@ nmfChartLineWithScatter::populateChart(
         QChart *chart,
         std::string &type,
         const std::string &style,
+        const bool& isMohnsRho,
         const bool &ShowFirstPoint,
         const bool &AddScatter,
         const int &XOffset,
@@ -34,6 +35,7 @@ nmfChartLineWithScatter::populateChart(
         const std::string &lineColorName,
         const QList<QString>& multiRunLineLabels)
 {
+    int numPointsInLine = 0;
     QLineSeries    *lineSeries    = nullptr;
     QScatterSeries *scatterSeries = nullptr;
     QString scatterSeriesName = "Obs Biomass";
@@ -57,6 +59,7 @@ nmfChartLineWithScatter::populateChart(
     //chart->removeAllSeries();
 
     // Load data into series and then add series to the chart
+    numPointsInLine = YAxisData.size1();
     for (unsigned int line=0; line<YAxisData.size2(); ++line) {
         lineSeries = new QLineSeries();
         if (style == "DashedLine") {
@@ -73,9 +76,10 @@ nmfChartLineWithScatter::populateChart(
             lineSeries->setPen(pen);
             //series->setColor(LineColor);
         }
-        for (unsigned j=XStartVal-XOffset; j<YAxisData.size1(); ++j) {
+        for (unsigned j=XStartVal-XOffset; j<numPointsInLine; ++j) {
             lineSeries->append(j+XOffset,YAxisData(j,line));
         }
+        numPointsInLine = (isMohnsRho) ? numPointsInLine-1 : numPointsInLine;
         chart->addSeries(lineSeries);
 
         if (multiRunLineLabels.size() > 0) {

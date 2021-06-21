@@ -2503,3 +2503,49 @@ nmfDatabase::getModelFormData(std::string& GrowthForm,
 
     return true;
 }
+
+void
+nmfDatabase::loadEstimatedVectorParameters(
+        nmfLogger*   logger,
+        std::string& projectSettingsConfig,
+        QComboBox*   cmbox)
+{
+    int index;
+    int NumRecords;
+    std::vector<std::string> fields;
+    std::string queryStr;
+    std::map<std::string, std::vector<std::string> > dataMap;
+
+    // Get Model structure data
+    fields     = {"SystemName","ObsBiomassType","GrowthForm","HarvestForm","WithinGuildCompetitionForm","PredationForm"};
+    queryStr   = "SELECT SystemName,ObsBiomassType,GrowthForm,HarvestForm,WithinGuildCompetitionForm,PredationForm";
+    queryStr  += " FROM Systems WHERE SystemName='" + projectSettingsConfig + "'";
+    dataMap    = nmfQueryDatabase(queryStr, fields);
+    NumRecords = dataMap["SystemName"].size();
+    if (NumRecords == 0) {
+        logger->logMsg(nmfConstants::Error,"[Error 1] nmfDatabase::callback_UpdateDiagnosticParameterChoices: No records found in table Systems for Name = "+projectSettingsConfig);
+        return;
+    }
+
+    // Figure out which items should be in the pulldown lists based upon the Model structure
+    cmbox->clear();
+    cmbox->addItems(nmfConstantsMSSPM::VectorParameterNames);
+
+    // Check for appropriate items in parameter combo boxes.
+    if (dataMap["ObsBiomassType"][0] != "Relative") {
+        index = cmbox->findText("SurveyQ");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["GrowthForm"][0] != "Logistic") {
+        index = cmbox->findText("Carrying Capacity (K)");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["GrowthForm"][0] == "Null") {
+        index = cmbox->findText("Growth Rate (r)");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["HarvestForm"][0] != "Effort (qE)") {
+        index = cmbox->findText("Catchability (q)");
+        cmbox->removeItem(index);
+    }
+}

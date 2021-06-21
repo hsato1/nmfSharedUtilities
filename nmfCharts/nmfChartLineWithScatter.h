@@ -42,6 +42,7 @@ public:
             QChart  *chart,
             std::string &type,
             const std::string &style,
+            const bool& isMohnsRho,
             const bool &skipFirstPoint,
             const bool &addScatter,
             const int  &XOffset,
