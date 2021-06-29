@@ -199,7 +199,9 @@ struct ModelReviewStruct {
  */
 struct ModelDataStruct {
 
+    bool   isMohnsRho;
     bool   showDiagnosticChart;
+    bool   useFixedSeed;
 
     bool   NLoptUseStopVal;
     bool   NLoptUseStopAfterTime;
@@ -287,4 +289,3 @@ struct ModelDataStruct {
 
 
 }
-

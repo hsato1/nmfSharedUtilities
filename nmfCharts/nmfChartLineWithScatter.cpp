@@ -14,6 +14,7 @@ nmfChartLineWithScatter::populateChart(
         QChart *chart,
         std::string &type,
         const std::string &style,
+        const bool& isMohnsRho,
         const bool &ShowFirstPoint,
         const bool &AddScatter,
         const int &XOffset,
@@ -32,8 +33,10 @@ nmfChartLineWithScatter::populateChart(
         const QColor &ScatterColor,
         const std::string &LineColorValue,
         const std::string &lineColorName,
-        const QList<QString>& multiRunLineLabels)
+        const QList<QString>& multiRunLineLabels,
+        const bool& showLegend)
 {
+    int numPointsInLine = 0;
     QLineSeries    *lineSeries    = nullptr;
     QScatterSeries *scatterSeries = nullptr;
     QString scatterSeriesName = "Obs Biomass";
@@ -55,8 +58,9 @@ nmfChartLineWithScatter::populateChart(
     // Set current theme
     chart->setTheme(static_cast<QChart::ChartTheme>(Theme));
     //chart->removeAllSeries();
-
+//std::cout << 1 << std::endl;
     // Load data into series and then add series to the chart
+    numPointsInLine = YAxisData.size1();
     for (unsigned int line=0; line<YAxisData.size2(); ++line) {
         lineSeries = new QLineSeries();
         if (style == "DashedLine") {
@@ -73,15 +77,16 @@ nmfChartLineWithScatter::populateChart(
             lineSeries->setPen(pen);
             //series->setColor(LineColor);
         }
-        for (unsigned j=XStartVal-XOffset; j<YAxisData.size1(); ++j) {
+        for (unsigned j=XStartVal-XOffset; j<numPointsInLine; ++j) {
             lineSeries->append(j+XOffset,YAxisData(j,line));
         }
+        numPointsInLine = (isMohnsRho) ? numPointsInLine-1 : numPointsInLine;
         chart->addSeries(lineSeries);
 
         if (multiRunLineLabels.size() > 0) {
             lineSeries->setName(multiRunLineLabels[line]);
             m_tooltips[multiRunLineLabels[line]] = multiRunLineLabels[line];
-        } else {
+        } else if (ColumnLabels.size() > 0) {
             lineSeries->setName(ColumnLabels[0]);
             m_tooltips[ColumnLabels[0]] = LineColorName;
         }
@@ -90,6 +95,7 @@ nmfChartLineWithScatter::populateChart(
         connect(lineSeries, SIGNAL(hovered(const QPointF&,bool)),
                 this,       SLOT(callback_hoveredLine(const QPointF&,bool)));
     }
+//std::cout << 2 << std::endl;
 
     if ((ScatterData.size1() != 0) && AddScatter) {
         scatterSeries = new QScatterSeries();
@@ -100,12 +106,15 @@ nmfChartLineWithScatter::populateChart(
         }
         chart->addSeries(scatterSeries);
         scatterSeries->setName(scatterSeriesName);
-        m_tooltips[scatterSeriesName] = scatterSeriesName; //"Deep Sky Blue";
+        if (m_tooltips.size() > 0) {
+            m_tooltips[scatterSeriesName] = scatterSeriesName; //"Deep Sky Blue";
+        }
 
         disconnect(scatterSeries,0,0,0);
         connect(scatterSeries, SIGNAL(hovered(const QPointF&,bool)),
                 this,          SLOT(callback_hoveredScatter(const QPointF&,bool)));
     }
+//std::cout << 3 << std::endl;
 
 //    // Set main title
 //    QFont mainTitleFont = chart->titleFont();
@@ -131,6 +140,7 @@ nmfChartLineWithScatter::populateChart(
         currentAxisY->setMin(currentYMin*YMinSliderVal/100.0);
         currentAxisY->applyNiceNumbers();
     }
+//std::cout << 4 << std::endl;
 
     QValueAxis *currentAxisX = qobject_cast<QValueAxis*>(chart->axes(Qt::Horizontal).back());
     currentAxisX->applyNiceNumbers();
@@ -143,7 +153,7 @@ nmfChartLineWithScatter::populateChart(
     chart->axes(Qt::Vertical).back()->setGridLineVisible(GridLines[1]);
 
     // Show legend
-    chart->legend()->setVisible(true);
+    chart->legend()->setVisible(showLegend);
     chart->legend()->setAlignment(Qt::AlignRight);
     chart->legend()->setShowToolTips(true);
     chart->legend()->setMarkerShape(QLegend::MarkerShapeFromSeries);

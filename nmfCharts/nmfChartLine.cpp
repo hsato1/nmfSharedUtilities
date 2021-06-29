@@ -42,6 +42,8 @@ nmfChartLine::populateChart(
         const std::string& LineColorName,
         const double&      XInc)
 {
+
+    std::cout << "In Populate Chart function" << std::endl;
     //bool showLegend = (ColumnLabels.size() > 0);
     QLineSeries *series = nullptr;
     QPen pen;
@@ -140,23 +142,36 @@ nmfChartLine::populateChart(
     // Setup X and Y axes
     chart->createDefaultAxes();
     QAbstractAxis *axisX = chart->axes(Qt::Horizontal).back();
+    //QValueAxis* chartXaxis = new QValueAxis();
     QFont titleFont = axisX->titleFont();
+
+    //QFont titleFont2 = chartXaxis->titleFont();
+
     titleFont.setPointSize(12);
     titleFont.setWeight(QFont::Bold);
 
+//    titleFont2.setPointSize(12);
+//    titleFont2.setWeight(QFont::Bold);
+
     QValueAxis *currentAxisY = qobject_cast<QValueAxis*>(chart->axes(Qt::Vertical).back());
+    QValueAxis* AxisY = new QValueAxis();
     currentAxisY->setTitleFont(titleFont);
     currentAxisY->setTitleText(QString::fromStdString(YTitle));
     currentAxisY->applyNiceNumbers();
     double currentYMin = currentAxisY->min();
+    std::cout << "In Populate Chart function" << std::endl;
+    std::cout << currentYMin << std::endl;
     if (YMinSliderVal >= 0) {
         currentAxisY->setMin(currentYMin*YMinSliderVal/100.0); // RSK - modify this
+        AxisY->setMin(currentYMin*YMinSliderVal/100.0);
+        AxisY->applyNiceNumbers();
         currentAxisY->applyNiceNumbers();
     }
 
 
     if (LeaveGapsWhereNegative) {
         double currentYMax = currentAxisY->max();
+        std::cout << "The current YMax is: " << currentYMax << std::endl;
         // Replace any y = -1 found in series with 99999
         // Then restore the previous y max value
         // This should have the effect of omitting -1 values but allowing in range values
@@ -174,6 +189,7 @@ nmfChartLine::populateChart(
             }
         }
         currentAxisY->setMax(currentYMax);
+        AxisY->setMax(currentYMax);
     }
 
 
@@ -188,7 +204,13 @@ nmfChartLine::populateChart(
     // Set range so plot completely fills out chart in the x-direction
     currentAxisX->setRange(XStartVal,XStartVal+(NumXValues-1)*XInc);
 
+//    chart->removeAxis(chart->axes(Qt::Vertical).back());
+//    chart->addAxis(AxisY, Qt::AlignBottom);
+//    chart->addAxis(currentAxisX, Qt::AlignLeft);
     // Set grid line visibility
+
+    std::cout << "Checking the GridLines\n" << GridLines[0] << std::endl;
+    std::cout << GridLines[1] << std::endl;
     chart->axes(Qt::Horizontal).back()->setGridLineVisible(GridLines[0]);
     chart->axes(Qt::Vertical).back()->setGridLineVisible(GridLines[1]);
 

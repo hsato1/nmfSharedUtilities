@@ -1622,9 +1622,7 @@ nmfDatabase::getForecastBiomass(
     dataMapForecastBiomass = nmfQueryDatabase(queryStr, fields);
     NumRecords = dataMapForecastBiomass["SpeName"].size();
     if (NumRecords == 0) {
-//        m_ChartView2d->hide();
         errorMsg  = "[Warning] nmfDatabase::getForecastBiomass: No records found in table ForecastBiomass";
-        //errorMsg += "\n" + queryStr;
         Logger->logMsg(nmfConstants::Warning,errorMsg);
         msg = "\nNo ForecastBiomass records found.\n\nPlease make sure a Forecast has been run.\n";
         QMessageBox::warning(Widget, "Warning", msg, QMessageBox::Ok);
@@ -1777,10 +1775,27 @@ nmfDatabase::getForecastMonteCarloParameters(
     return true;
 }
 
+bool
+nmfDatabase::isARelativeBiomassModel(const std::string& modelName)
+{
+    bool retv=false;
+    std::vector<std::string> fields;
+    std::string queryStr;
+    std::map<std::string, std::vector<std::string> > dataMap;
 
+    fields    = {"SystemName","ObsBiomassType"};
+    queryStr  = "SELECT SystemName,ObsBiomassType FROM Systems";
+    queryStr += " WHERE SystemName = '" + modelName + "'";
+    dataMap   = nmfQueryDatabase(queryStr,fields);
+    int NumRecords = dataMap["SystemName"].size();
+    if (NumRecords == 1) {
+        retv = (dataMap["ObsBiomassType"][0] == "Relative");
+    }
+    return retv;
+}
 
 bool
-nmfDatabase::getForecastCatch(
+nmfDatabase::getForecastHarvest(
         QWidget*           Widget,
         nmfLogger*         Logger,
         const std::string& ForecastName,
@@ -1790,7 +1805,8 @@ nmfDatabase::getForecastCatch(
         std::string&       Minimizer,
         std::string&       ObjectiveCriterion,
         std::string&       Scaling,
-        std::vector<boost::numeric::ublas::matrix<double> >& ForecastCatch)
+        const std::string& HarvestForm,
+        std::vector<boost::numeric::ublas::matrix<double> >& ForecastHarvest)
 {
     int m=0;
     int NumRecords;
@@ -1799,12 +1815,18 @@ nmfDatabase::getForecastCatch(
     std::string errorMsg;
     QString msg;
     std::map<std::string, std::vector<std::string> > dataMap;
+    std::string ForecastTable = "ForecastHarvestCatch";
+    ForecastHarvest.clear();
 
-    ForecastCatch.clear();
+    if (HarvestForm == "Effort (qE)") {
+        ForecastTable = "ForecastHarvestEffort";
+    } else if (HarvestForm == "Exploitation (F)") {
+        ForecastTable = "ForecastHarvestExploitation";
+    }
 
-    // Load Forecast Catch data
+    // Load Forecast Harvest data
     fields    = {"ForecastName","Algorithm","Minimizer","ObjectiveCriterion","Scaling","SpeName","Year","Value"};
-    queryStr  = "SELECT ForecastName,Algorithm,Minimizer,ObjectiveCriterion,Scaling,SpeName,Year,Value FROM ForecastCatch";
+    queryStr  = "SELECT ForecastName,Algorithm,Minimizer,ObjectiveCriterion,Scaling,SpeName,Year,Value FROM " + ForecastTable;
     queryStr += " WHERE ForecastName = '" + ForecastName +
                 "' AND Algorithm = '" + Algorithm +
                 "' AND Minimizer = '" + Minimizer +
@@ -1814,15 +1836,15 @@ nmfDatabase::getForecastCatch(
     dataMap = nmfQueryDatabase(queryStr, fields);
     NumRecords = dataMap["SpeName"].size();
     if (NumRecords == 0) {
-        errorMsg  = "[Warning] nmfDatabase::getForecastCatch: No records found in table ForecastCatch";
+        errorMsg  = "[Warning] nmfDatabase::getForecastCatch: No records found in table " + ForecastTable;
         Logger->logMsg(nmfConstants::Warning,errorMsg);
-        msg = "\nNo ForecastCatch records found.\n\nPlease make sure a Forecast has been run.\n";
+        msg = "\nNo " + QString::fromStdString(ForecastTable) + " records found.\n\nPlease make sure a Forecast has been run.\n";
         QMessageBox::warning(Widget, "Warning", msg, QMessageBox::Ok);
         return false;
     }
     if (NumRecords != NumSpecies*(RunLength+1)) {
         errorMsg  = "[Error 2] nmfDatabase::getForecastCatch: Number of records found (" + std::to_string(NumRecords) + ") in ";
-        errorMsg += "table ForecastCatch does not equal number of NumSpecies*(RunLength+1) (";
+        errorMsg += "table " + ForecastTable + " does not equal number of NumSpecies*(RunLength+1) (";
         errorMsg += std::to_string(NumSpecies) + "*" + std::to_string((RunLength+1)) + "=";
         errorMsg += std::to_string(NumSpecies*(RunLength+1)) + ") records";
         errorMsg += "\n" + queryStr;
@@ -1838,7 +1860,7 @@ nmfDatabase::getForecastCatch(
             TmpMatrix(time,species) = std::stod(dataMap["Value"][m++]);
         }
     }
-    ForecastCatch.push_back(TmpMatrix);
+    ForecastHarvest.push_back(TmpMatrix);
     return true;
 }
 
@@ -2502,4 +2524,92 @@ nmfDatabase::getModelFormData(std::string& GrowthForm,
     InitialYear     = std::stoi(dataMap["StartYear"][0]);
 
     return true;
+}
+
+QStringList
+nmfDatabase::getVectorParameterNames(
+        nmfLogger*   logger,
+        std::string& projectSettingsConfig)
+{
+    int NumRecords;
+    std::vector<std::string> fields;
+    std::string queryStr;
+    std::map<std::string, std::vector<std::string> > dataMap;
+
+    QStringList parameterNames = nmfConstantsMSSPM::VectorParameterNames;
+
+    // Get Model structure data
+    fields     = {"SystemName","ObsBiomassType","GrowthForm","HarvestForm","WithinGuildCompetitionForm","PredationForm"};
+    queryStr   = "SELECT SystemName,ObsBiomassType,GrowthForm,HarvestForm,WithinGuildCompetitionForm,PredationForm";
+    queryStr  += " FROM Systems WHERE SystemName='" + projectSettingsConfig + "'";
+    dataMap    = nmfQueryDatabase(queryStr, fields);
+    NumRecords = dataMap["SystemName"].size();
+    if (NumRecords == 0) {
+        logger->logMsg(nmfConstants::Error,"[Error 1] nmfDatabase::callback_UpdateDiagnosticParameterChoices: No records found in table Systems for Name = "+projectSettingsConfig);
+        return {};
+    }
+
+    // Check for appropriate items in parameter combo boxes.
+    if (dataMap["ObsBiomassType"][0] != "Relative") {
+        parameterNames.removeAll("SurveyQ");
+    }
+    if (dataMap["GrowthForm"][0] != "Logistic") {
+        parameterNames.removeAll("Carrying Capacity (K)");
+    }
+    if (dataMap["GrowthForm"][0] == "Null") {
+        parameterNames.removeAll("Growth Rate (r)");
+    }
+    if (dataMap["HarvestForm"][0] != "Effort (qE)") {
+        parameterNames.removeAll("Catchability (q)");
+    }
+
+    return parameterNames;
+}
+
+void
+nmfDatabase::loadEstimatedVectorParameters(
+        nmfLogger*   logger,
+        std::string& projectSettingsConfig,
+        QComboBox*   cmbox)
+{
+    int index;
+    int NumRecords;
+    std::vector<std::string> fields;
+    std::string queryStr;
+    std::map<std::string, std::vector<std::string> > dataMap;
+
+    // Get Model structure data
+    fields     = {"SystemName","ObsBiomassType","GrowthForm","HarvestForm","WithinGuildCompetitionForm","PredationForm"};
+    queryStr   = "SELECT SystemName,ObsBiomassType,GrowthForm,HarvestForm,WithinGuildCompetitionForm,PredationForm";
+    queryStr  += " FROM Systems WHERE SystemName='" + projectSettingsConfig + "'";
+    dataMap    = nmfQueryDatabase(queryStr, fields);
+    NumRecords = dataMap["SystemName"].size();
+    if (NumRecords == 0) {
+        logger->logMsg(nmfConstants::Error,"[Error 1] nmfDatabase::callback_UpdateDiagnosticParameterChoices: No records found in table Systems for Name = "+projectSettingsConfig);
+        return;
+    }
+
+    // Figure out which items should be in the pulldown lists based upon the Model structure
+    cmbox->blockSignals(true);
+    cmbox->clear();
+    cmbox->addItems(nmfConstantsMSSPM::VectorParameterNames);
+
+    // Check for appropriate items in parameter combo boxes.
+    if (dataMap["ObsBiomassType"][0] != "Relative") {
+        index = cmbox->findText("SurveyQ");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["GrowthForm"][0] != "Logistic") {
+        index = cmbox->findText("Carrying Capacity (K)");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["GrowthForm"][0] == "Null") {
+        index = cmbox->findText("Growth Rate (r)");
+        cmbox->removeItem(index);
+    }
+    if (dataMap["HarvestForm"][0] != "Effort (qE)") {
+        index = cmbox->findText("Catchability (q)");
+        cmbox->removeItem(index);
+    }
+    cmbox->blockSignals(false);
 }

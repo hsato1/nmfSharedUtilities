@@ -118,6 +118,10 @@ namespace nmfConstantsMSSPM
      const bool   IsMonteCarlo         = true;
      const bool   IsNotMonteCarlo      = false;
      const bool   PreEstimation        = true;
+     const bool   ShowLegend           = true;
+     const bool   DontShowLegend       = false;
+     const QString ChartType2d         = "2d";
+     const QString ChartType3d         = "3d";
 
      const std::string  HiddenDir                      = ".MSSPM";
      const std::string  HiddenDataDir                  = ".MSSPM/data";
@@ -137,8 +141,15 @@ namespace nmfConstantsMSSPM
      const std::string  OutputDataDirMMode             = "Remora/outputData";
      const std::string  OutputScenariosDirMMode        = "Remora/scenarios";
      const std::string  MultiRunFilename               = "MultiRunParameter.csv";
+     const std::string  MohnsRhoRunFilename            = "MohnsRhoMultiRunParameter.csv";
      const std::string  ModelReviewFilename            = "ModelReview.csv";
      const std::string  EstimatedParametersFilename    = "EstimatedParameters.csv";
+     const QString      OutputChartBiomass             = "Biomass vs Time";
+     const QString      OutputChartHarvest             = "Harvest vs Time";
+     const QString      OutputChartExploitation        = "Exploitation Rate";
+     const QString      OutputChartExploitationCatchAverageTitle = "Exploitation Rate Ave(C/Bc)";
+     const QString      OutputChartExploitationCatchTitle   = "Exploitation Rate (C/Bc)";
+     const QString      OutputChartExploitationEffortTitle  = "Exploitation Rate ((qE)/Bc)";
 
      const QStringList VectorParameterNames =
          {"Initial Biomass (B₀)",

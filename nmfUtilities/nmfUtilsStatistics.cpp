@@ -864,8 +864,8 @@ double calculateMaximumLikelihoodNoRescale(
     double k3 = 0;
     double value = 0;
     double finalValue = 0;
-    int numYears   = ObsBiomass.size1();
-    int numSpecies = ObsBiomass.size2();
+    int numYears   = EstBiomass.size1();
+    int numSpecies = EstBiomass.size2();
     int NumPoints  = numYears;
     std::vector<double> weights;
 
@@ -950,6 +950,4 @@ double calculateSumOfSquares(const boost::numeric::ublas::matrix<double>& EstBio
     return log10(sumSquares+1);
 }
 
-
 } // end namespace nmfStatUtils
-

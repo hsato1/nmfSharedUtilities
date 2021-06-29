@@ -105,7 +105,7 @@ public:
             const std::string &userName,
             const std::string &password,
             std::string&       errorMsg);
-    bool getForecastCatch(
+    bool getForecastHarvest(
             QWidget*           Widget,
             nmfLogger*         Logger,
             const std::string& ForecastName,
@@ -115,6 +115,7 @@ public:
             std::string&       Minimizer,
             std::string&       ObjectiveCriterion,
             std::string&       Scaling,
+            const std::string& HarvestForm,
             std::vector<boost::numeric::ublas::matrix<double> >& ForecastCatch);
     /**
      * @brief Closes the database
@@ -203,6 +204,7 @@ public:
             std::string&         ObjectiveCriterion,
             std::string&         Scaling,
             QStringList&         HoverData);
+    bool isARelativeBiomassModel(const std::string& modelName);
     bool updateForecastMonteCarloParameters(
             QWidget*             widget,
             nmfLogger*           logger,
@@ -224,6 +226,10 @@ public:
             std::vector<double>& PredationRandomValues,
             std::vector<double>& HandlingRandomValues,
             std::vector<double>& HarvestRandomValues);
+
+    QStringList getVectorParameterNames(
+            nmfLogger*   logger,
+            std::string& projectSettingsConfig);
 
     /**
      * @brief Closes the Qt SQL database connection
@@ -512,6 +518,11 @@ public:
                         std::string& Username,
                         std::string& Password,
                         std::string& ProjectDatabase);
+
+    void loadEstimatedVectorParameters(
+            nmfLogger*   logger,
+            std::string& projectSettingsConfig,
+            QComboBox*   cmbox);
 
     /**
      * @brief getListOfAuthenticatedDatabaseNames - returns list of databases that are appropriate for this application

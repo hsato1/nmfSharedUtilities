@@ -42,6 +42,7 @@ public:
             QChart  *chart,
             std::string &type,
             const std::string &style,
+            const bool& isMohnsRho,
             const bool &skipFirstPoint,
             const bool &addScatter,
             const int  &XOffset,
@@ -60,7 +61,8 @@ public:
             const QColor &ScatterColor,
             const std::string &LineColor,
             const std::string &lineColorName,
-            const QList<QString>& multiRunLineLabels);
+            const QList<QString>& multiRunLineLabels,
+            const bool& showLegend);
 signals:
 
 public slots:
@@ -70,4 +72,3 @@ public slots:
     void callback_HideTooltip();
 
 };
-

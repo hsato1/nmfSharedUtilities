@@ -2023,6 +2023,7 @@ loadMultiRunData(const nmfStructsQt::ModelDataStruct& dataStruct,
 
     std::string line;
     QString lineStr;
+std::cout << "Loading multi run file: " << dataStruct.MultiRunSetupFilename << std::endl;
     std::ifstream multiRunFile(dataStruct.MultiRunSetupFilename);
     if (multiRunFile.is_open()) {
         getline(multiRunFile,line); // First line is the header
@@ -2159,8 +2160,27 @@ elapsedTimeCondensed(QDateTime startTime)
     }
 }
 
-} // end namespace
 
+void
+updateProgressDlg(nmfLogger* logger,
+                  QProgressDialog* dlg,
+                  const std::string& msg,
+                  int& pInc)
+{
+    logger->logMsg(nmfConstants::Normal,msg);
+    dlg->setValue(++pInc);
+    dlg->update();
+    dlg->setLabelText(QString::fromStdString(msg));
+    QCoreApplication::processEvents();
+}
+
+void
+setBackgroundLineEdit(QLineEdit* lineEdit, const QString& backgroundStyleSheet)
+{
+    lineEdit->setStyleSheet(backgroundStyleSheet);
+}
+
+} // end namespace
 
 
 

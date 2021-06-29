@@ -39,6 +39,7 @@
 #include <QMimeData>
 #include <QModelIndexList>
 #include <QProcess>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSettings>
@@ -170,7 +171,10 @@ namespace nmfUtilsQt {
     /**
      * @brief Background color specification for a read only line edit widget
      */
-    const QString ReadOnlyLineEditBgColor = "QLineEdit { background: rgb(247,247,247);}";
+//    const QString ReadOnlyLineEditBgColor     = "QLineEdit { background: rgb(250,240,230);}";
+//    const QString ReadOnlyLineEditBgColorDark = "QLineEdit {background: rgb(103,110,113);}";
+    const QString ReadOnlyLineEditBgColorLight = "QLineEdit {background: rgb(240,240,240);}";
+    const QString ReadOnlyLineEditBgColorDark  = "QLineEdit {background: rgb(110,110,110);}";
     /**
      * @brief adds a widget tree item under the passed parent item
      * @param parent : parent widget item
@@ -736,5 +740,18 @@ namespace nmfUtilsQt {
      */
     std::string elapsedTimeCondensed(QDateTime startTime);
 
-} // end namespace
+    /**
+     * @brief Updates the passed QProgressDialog widget
+     * @param logger : application logger
+     * @param dlg : QProgressDialog widget
+     * @param msg : message to display on QProgressDialog widget
+     * @param pInc : QProgressDialog increment
+     */
+    void updateProgressDlg(nmfLogger* logger,
+                           QProgressDialog* dlg,
+                           const std::string& msg,
+                           int& pInc);
 
+    void setBackgroundLineEdit(QLineEdit* lineEdit,
+                               const QString& backgroundStyleSheet);
+} // end namespace
