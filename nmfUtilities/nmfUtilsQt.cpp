@@ -2161,6 +2161,7 @@ elapsedTimeCondensed(QDateTime startTime)
 }
 
 
+
 void
 updateProgressDlg(nmfLogger* logger,
                   QProgressDialog* dlg,

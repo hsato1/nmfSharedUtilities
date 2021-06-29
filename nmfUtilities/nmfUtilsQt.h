@@ -752,6 +752,7 @@ namespace nmfUtilsQt {
                            const std::string& msg,
                            int& pInc);
 
+
     void setBackgroundLineEdit(QLineEdit* lineEdit,
                                const QString& backgroundStyleSheet);
 } // end namespace

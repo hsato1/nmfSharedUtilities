@@ -2526,6 +2526,7 @@ nmfDatabase::getModelFormData(std::string& GrowthForm,
     return true;
 }
 
+
 QStringList
 nmfDatabase::getVectorParameterNames(
         nmfLogger*   logger,
@@ -2566,6 +2567,7 @@ nmfDatabase::getVectorParameterNames(
     return parameterNames;
 }
 
+
 void
 nmfDatabase::loadEstimatedVectorParameters(
         nmfLogger*   logger,
@@ -2590,7 +2592,7 @@ nmfDatabase::loadEstimatedVectorParameters(
     }
 
     // Figure out which items should be in the pulldown lists based upon the Model structure
-    cmbox->blockSignals(true);
+
     cmbox->clear();
     cmbox->addItems(nmfConstantsMSSPM::VectorParameterNames);
 
@@ -2611,5 +2613,7 @@ nmfDatabase::loadEstimatedVectorParameters(
         index = cmbox->findText("Catchability (q)");
         cmbox->removeItem(index);
     }
+
     cmbox->blockSignals(false);
+
 }
